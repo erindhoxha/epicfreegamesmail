@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>EpicFreeGamesMail</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./styles/output.css" rel="stylesheet" />
+  </head>
+  <body class="bg-gray-900 text-white">
+    <main
+      class="mx-auto mt-[3rem] w-full max-w-screen-sm px-3 sm:mt-[3rem] pb-10"
+    >
+      <section class="flex flex-col justify-start gap-[2rem] sm:gap-[3rem]">
+        <div>
+          <h1 class="text-white text-3xl font-bold mb-4 mt-4">
+            Epic Free Games
+          </h1>
+          <p>Never miss free games again, sent directly in your inbox!</p>
+        </div>
+
+        <div id="subscriptionForm">
+          <label for="email" class="block">Enter your best email</label>
+          <input
+            type="text"
+            id="email"
+            class="w-full md:max-w-md bg-slate-800 text-white p-2 mt-2 text-md rounded-md"
+            placeholder="Email"
+          />
+          <button
+            id="subscribeButton"
+            class="w-full md:max-w-md bg-blue-500 text-white p-2 mt-4 text-md rounded-md"
+          >
+            Subscribe
+          </button>
+          <p
+            id="subscriptionMessage"
+            class="mt-4 text-green-500"
+            style="display: none"
+          ></p>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-bold">What is EpicFreeGames?</h2>
+          <p class="mt-4">
+            EpicFreeGames is a service that sends you an email every time a new
+            free game is available on the Epic Games Store.
+          </p>
+          <h2 class="text-xl font-bold mt-4">How it works?</h2>
+          <p class="mt-4">
+            Just by subscribing you will already start receiving emails weekly
+            for the free games available on the Epic Games Store.
+          </p>
+          <p class="mt-2 font-bold italic">
+            You will be able to unsubscribe at any time.
+          </p>
+        </div>
+
+        <div class="flex flex-col">
+          <a href="/privacy-policy.html" class="text-blue-500 underline"
+            >Privacy Policy</a
+          >
+          <a href="/terms-and-conditions.html" class="text-blue-500 underline"
+            >Terms and Conditions</a
+          >
+          <a href="mailto:hi@epicfreegames.com" class="text-blue-500 underline"
+            >Contact us</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <script>
+      document
+        .getElementById("subscribeButton")
+        .addEventListener("click", function () {
+          const button = this;
+          const message = document.getElementById("subscriptionMessage");
+          button.textContent = "Loading...";
+
+          setTimeout(() => {
+            // Simulate an asynchronous action like an API call
+            button.textContent = "Subscribed!";
+            button.disabled = true; // Optionally disable button after subscribing
+            message.textContent = "You will start receiving emails soon! 🎉";
+            message.style.display = ""; // Make the message visible
+          }, 2000); // Delay of 2 seconds to simulate loading
+        });
+    </script>
+  </body>
+</html>
