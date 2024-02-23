@@ -874,6 +874,14 @@ video {
   max-width: 100vw;
 }
 
+.max-w-md {
+  max-width: 28rem;
+}
+
+.max-w-sm {
+  max-width: 24rem;
+}
+
 .flex-shrink {
   flex-shrink: 1;
 }
