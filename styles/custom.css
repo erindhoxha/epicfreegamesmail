@@ -1,0 +1,30 @@
+.email {
+  border-radius: 24px;
+  position: fixed;
+  right: -100px; /* Adjust this value as needed for larger screens */
+  z-index: -2;
+  rotate: 15deg;
+  top: 15%;
+  width: 600px; /* Consider making this dynamic or smaller for smaller screens */
+}
+
+/* Example media query for screens smaller than 768px (like tablets) */
+@media (max-width: 1500px) {
+  .email {
+    bottom: unset;
+    top: 5%;
+    rotate: 10deg;
+    right: -150px;
+    width: 550px; /* Smaller width to fit smaller screens */
+  }
+}
+
+/* Example media query for screens smaller than 480px (like phones) */
+@media (max-width: 1028px) {
+  .email {
+    right: -40%; /* Adjust positioning for very small screens */
+    width: 500px; /* Further reduce the width for small screens */
+    top: 20%; /* Optionally adjust the vertical positioning */
+    opacity: 0.1;
+  }
+}

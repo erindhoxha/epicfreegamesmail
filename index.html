@@ -5,11 +5,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="./styles/output.css" rel="stylesheet" />
+    <link href="./styles/custom.css" rel="stylesheet" />
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="./env.js"></script>
     <script src="./scripts/initialise.js"></script>
   </head>
-  <body class="bg-gray-900 text-white">
+  <body class="bg-gray-900 text-white overflow-x-hidden">
     <main
       class="mx-auto mt-[3rem] w-full max-w-screen-sm px-4 sm:mt-[3rem] pb-10"
     >
@@ -18,7 +19,7 @@
           <h1 class="text-white text-3xl font-bold mb-4 mt-4">
             Epic Free Games
           </h1>
-          <p>Weekly free games from Epic Games sent to your inbox.</p>
+          <p>Weekly free games from Epic Games sent in an email.</p>
         </div>
 
         <form id="subscriptionForm">
@@ -33,7 +34,7 @@
           <button
             id="subscribeButton"
             type="submit"
-            class="w-full md:max-w-md bg-blue-500 text-white p-2 mt-4 text-md rounded-md"
+            class="w-full md:max-w-md bg-blue-500 text-white p-2 mt-2 text-md rounded-md"
           >
             Subscribe
           </button>
@@ -43,6 +44,10 @@
             style="display: none"
           ></p>
         </form>
+
+        <div class="overflow-x-hidden max-w-[100vw]">
+          <img class="email" src="./img/email.png" />
+        </div>
 
         <div>
           <h2 class="text-xl font-bold">What is EpicFreeGamesMail?</h2>
@@ -74,6 +79,12 @@
             >Contact us</a
           >
         </div>
+
+        <div class="mt-4">
+          <p class="text-sm">
+            If you like what we do,
+            consider supporting us by buying us a coffee!
+          </p>
       </section>
     </main>
 
