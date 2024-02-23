@@ -2,6 +2,13 @@
 <html>
   <head>
     <title>EpicFreeGamesMail</title>
+    <meta property="og:title" content="EpicFreeGamesMail" />
+    <meta property="og:description" content="Weekly free games from Epic Games sent in an email." />
+    <meta property="og:image" content="./img/email.png" />
+    <meta property="og:url" content="https://epicfreegames.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="EpicFreeGamesMail" />
+    <meta property="og:locale" content="en_US" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="./styles/output.css" rel="stylesheet" />
@@ -10,14 +17,25 @@
     <script src="./env.js"></script>
     <script src="./scripts/initialise.js"></script>
   </head>
-  <body class="bg-gray-900 text-white overflow-x-hidden">
+  <body class="bg-gray-900 text-slate-200 overflow-x-hidden">
     <main
       class="mx-auto mt-[3rem] w-full max-w-screen-sm px-4 sm:mt-[3rem] pb-10"
     >
       <section class="flex flex-col justify-start gap-[2rem] sm:gap-[3rem]">
         <div>
-          <h1 class="text-white text-3xl font-bold mb-4 mt-4">
-            Epic Free Games
+          <div class="overflow-x-hidden max-w-[100vw]">
+            <img class="email" src="./img/email.png" />
+          </div>
+  
+          <div class="overflow-x-hidden max-w-[100vw]">
+            <img class="email2" src="./img/email.png" />
+          </div>
+
+          <div class="overflow-x-hidden max-w-[100vw]">
+            <img class="email3" src="./img/email.png" />
+          </div>
+          <h1 class="text-3xl font-bold mb-4 mt-4">
+            Epic Free Games Mail
           </h1>
           <p>Weekly free games from Epic Games sent in an email.</p>
         </div>
@@ -27,14 +45,14 @@
           <input
             type="text"
             id="email"
-            class="w-full md:max-w-md bg-slate-800 text-white p-2 mt-2 text-md rounded-md"
+            class="w-full md:max-w-md bg-slate-800 p-2 mt-2 text-md rounded-md"
             placeholder="john@doe.com"
             required
           />
           <button
             id="subscribeButton"
             type="submit"
-            class="w-full md:max-w-md bg-blue-500 text-white p-2 mt-2 text-md rounded-md"
+            class="w-full md:max-w-md bg-blue-500 p-2 mt-2 text-md rounded-md"
           >
             Subscribe
           </button>
@@ -45,26 +63,12 @@
           ></p>
         </form>
 
-        <div class="overflow-x-hidden max-w-[100vw]">
-          <img class="email" src="./img/email.png" />
-        </div>
-
         <div>
           <h2 class="text-xl font-bold">What is EpicFreeGamesMail?</h2>
           <p class="mt-4">
             EpicFreeGamesMail is an email generator service that sends you an
             email every Thursday 10:00 AM (PST) with a new free game that is
             available on the Epic Games Store.
-          </p>
-
-          <p class="mt-4">
-            Unsubscribe anytime. For any queries, you can
-            <a
-              class="text-blue-500 underline"
-              href="mailto:hi@epicfreegamesmail.com"
-              >contact</a
-            >
-            us here.
           </p>
         </div>
 
@@ -81,10 +85,7 @@
         </div>
 
         <div class="mt-4">
-          <p class="text-sm">
-            If you like what we do,
-            consider supporting us by buying us a coffee!
-          </p>
+          <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="erindhoxha" data-color="#FFDD00" data-emoji=""  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
       </section>
     </main>
 
