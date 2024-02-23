@@ -1,7 +1,7 @@
 .email {
   border-radius: 24px;
   position: fixed;
-  right: 0; /* Adjust this value as needed for larger screens */
+  right: -200px; /* Adjust this value as needed for larger screens */
   z-index: -2;
   transform: rotate(7.5deg);
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
@@ -12,7 +12,7 @@
 .email2 {
   border-radius: 24px;
   position: fixed;
-  right: -100px; /* Adjust this value as needed for larger screens */
+  right: -200px; /* Adjust this value as needed for larger screens */
   z-index: -3;
   transform: rotate(10deg);
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
@@ -23,7 +23,7 @@
 .email3 {
   border-radius: 24px;
   position: fixed;
-  right: -100px; /* Adjust this value as needed for larger screens */
+  right: -200px; /* Adjust this value as needed for larger screens */
   z-index: -4;
   top: 15%;
   transform: rotate(12.5deg);
@@ -43,7 +43,7 @@
 }
 
 /* Example media query for screens smaller than 480px (like phones) */
-@media (max-width: 1028px) {
+@media (max-width: 1180px) {
   .email {
     right: 0%; /* Adjust positioning for very small screens */
     width: 550px; /* Further reduce the width for small screens */
