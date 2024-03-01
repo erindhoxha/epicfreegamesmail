@@ -49,7 +49,9 @@ response
       let images = data.elements[i].keyImages[0].url;
       let title = data.elements[i].title;
       let description = endDate ? `Free now until ${endDate}` : "Coming soon";
-      let download_url = `https://store.epicgames.com/en-US/p/${data.elements[i].urlSlug}`;
+      let download_url = endDate
+        ? `https://store.epicgames.com/en-US/p/${data.elements[i].urlSlug}`
+        : undefined;
 
       variables.push({
         [`title_${i + 1}`]: title,
@@ -58,6 +60,7 @@ response
         [`download_url_${i + 1}`]: download_url,
       });
     }
+    sendRequest(template, Object.assign({}, ...variables));
   })
   .catch((err) => console.log(err));
 
