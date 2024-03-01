@@ -60,7 +60,12 @@ response
   })
   .catch((err) => console.log(err));
 
-const sendRequest = (templateId, variables) => {
+const sendRequest = async (templateId, variables) => {
+  const contacts = await mailjet.get("contact").request();
+  const recipients = contacts.body.Data.map((contact) => ({
+    Email: contact.Email,
+  }));
+
   const request = mailjet.post("send", { version: "v3.1" }).request({
     Messages: [
       {
@@ -68,14 +73,8 @@ const sendRequest = (templateId, variables) => {
           Email: "epicfreegamesmail@gmail.com",
           Name: "Epic Free Games Mail",
         },
-        To: [
-          {
-            Email: "erind.cbh@gmail.com",
-          },
-        ],
+        To: recipients,
         Variables: {
-          firstName: "Erind",
-          download_url: "https://www.epicgames.com/store/en-US/free-games",
           ...variables,
         },
         TemplateErrorReporting: {
