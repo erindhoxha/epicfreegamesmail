@@ -1,7 +1,7 @@
 const Mailjet = require("node-mailjet");
 require("dotenv").config();
 const axios = require("axios");
-const { format, formatRelative, subDays } = require("date-fns");
+const { format } = require("date-fns");
 
 const TEMPLATE_ID_2_COLUMNS = 5723859;
 const TEMPLATE_ID_3_COLUMNS = 5743120;
@@ -19,11 +19,9 @@ const response = axios.get(
   },
 );
 
-let data;
-
 response
   .then((res) => {
-    data = res.data.data.Catalog.searchStore;
+    const data = res.data.data.Catalog.searchStore;
     let template;
 
     if (data.elements.length === 2) {
@@ -37,26 +35,24 @@ response
     let variables = [];
 
     for (let i = 0; i < data.elements.length; i++) {
-      let endDates =
+      const endDates =
         data.elements[i].promotions?.promotionalOffers[0]?.promotionalOffers[0]
           .endDate;
-
-      let endDateFormatted = endDates ? new Date(endDates) : undefined;
-
+      const endDateFormatted = endDates ? new Date(endDates) : undefined;
       const endDate = endDateFormatted
         ? format(endDateFormatted, "do 'of' MMMM 'at' h:mma")
         : undefined;
-      let images = data.elements[i].keyImages[0].url;
-      let title = data.elements[i].title;
-      let description = endDate ? `Free now until ${endDate}` : "Coming soon";
-      let download_url = endDate
-        ? `https://store.epicgames.com/en-US/p/${data.elements[i].urlSlug}`
+      const image = data.elements[i].keyImages[2].url;
+      const title = data.elements[i].title;
+      const description = endDate ? `Free now until ${endDate}` : "Coming soon";
+      const download_url = endDate
+        ? `https://store.epicgames.com/en-US/p/${data.elements[i].productSlug}`
         : undefined;
 
       variables.push({
         [`title_${i + 1}`]: title,
         [`description_${i + 1}`]: description,
-        [`image_${i + 1}`]: images,
+        [`image_${i + 1}`]: image,
         [`download_url_${i + 1}`]: download_url,
       });
     }
