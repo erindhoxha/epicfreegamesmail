@@ -61,19 +61,19 @@ response
   .catch((err) => console.log(err));
 
 const sendRequest = async (templateId, variables) => {
-  const contacts = await mailjet.get("contact").request();
+  const contacts = await mailjet.get("contact?ContactsList=10422731").request();
   const recipients = contacts.body.Data.map((contact) => ({
     Email: contact.Email,
   }));
 
   const request = mailjet.post("send", { version: "v3.1" }).request({
-    Messages: [
-      {
+    Messages: recipients.map((recipient) => {
+      return {
         From: {
           Email: "epicfreegamesmail@gmail.com",
           Name: "Epic Free Games Mail",
         },
-        To: recipients,
+        To: [recipient],
         Variables: {
           ...variables,
         },
@@ -84,8 +84,8 @@ const sendRequest = async (templateId, variables) => {
         TemplateID: templateId,
         TemplateLanguage: true,
         Subject: `Epic Free Games - ${new Date().toDateString()}`,
-      },
-    ],
+      };
+    }),
   });
   request
     .then((result) => {
