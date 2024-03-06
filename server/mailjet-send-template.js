@@ -70,7 +70,7 @@ const sendRequest = async (templateId, variables) => {
     Messages: recipients.map((recipient) => {
       return {
         From: {
-          Email: "noreply@epicfreegamesmail.com",
+          Email: "hello@epicfreegamesmail.com",
           Name: "Epic Free Games Mail",
         },
         To: [recipient],
