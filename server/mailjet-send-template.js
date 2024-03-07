@@ -24,7 +24,15 @@ response
     const data = res.data.data.Catalog.searchStore;
     let template;
 
-    const filteredData = data.elements.filter((element) => element.promotions);
+    const sortedData = data.elements.sort((a, b) => {
+      if (a.promotions?.promotionalOffers.length > 0) {
+        return -1;
+      }
+    });
+
+    const filteredData = sortedData.filter((game) => {
+      return game.promotions;
+    });
 
     if (filteredData.length === 2) {
       template = TEMPLATE_ID_2_COLUMNS;
@@ -59,8 +67,10 @@ response
         ? `Free now until ${endDate} GMT`
         : `Coming soon ${upcomingDateFormatted}`;
 
+      console.log(filteredData[i]);
+
       const download_url = endDate
-        ? `https://store.epicgames.com/en-US/p/${filteredData[i].productSlug}`
+        ? `https://store.epicgames.com/en-US/p/${filteredData[i].catalogNs.mappings[0].pageSlug}`
         : undefined;
 
       variables.push({
@@ -70,6 +80,7 @@ response
         [`download_url_${i + 1}`]: download_url,
       });
     }
+    console.log(variables);
     sendRequest(template, Object.assign({}, ...variables));
   })
   .catch((err) => console.log(err));
