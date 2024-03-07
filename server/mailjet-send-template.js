@@ -80,7 +80,6 @@ response
         [`download_url_${i + 1}`]: download_url,
       });
     }
-    console.log(variables);
     sendRequest(template, Object.assign({}, ...variables));
   })
   .catch((err) => console.log(err));
