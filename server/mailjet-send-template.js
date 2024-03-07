@@ -24,29 +24,43 @@ response
     const data = res.data.data.Catalog.searchStore;
     let template;
 
-    if (data.elements.length === 2) {
+    const filteredData = data.elements.filter((element) => element.promotions);
+
+    if (filteredData.length === 2) {
       template = TEMPLATE_ID_2_COLUMNS;
-    } else if (data.elements.length === 3) {
+    } else if (filteredData.length === 3) {
       template = TEMPLATE_ID_3_COLUMNS;
     } else {
       console.log("Error, no template found");
     }
 
-    let variables = [];
+    const variables = [];
 
-    for (let i = 0; i < data.elements.length; i++) {
+    for (let i = 0; i < filteredData.length; i++) {
       const endDates =
-        data.elements[i].promotions?.promotionalOffers[0]?.promotionalOffers[0]
+        filteredData[i].promotions?.promotionalOffers[0]?.promotionalOffers[0]
           .endDate;
       const endDateFormatted = endDates ? new Date(endDates) : undefined;
       const endDate = endDateFormatted
-        ? format(endDateFormatted, "do 'of' MMMM 'at' h:mma")
+        ? format(endDateFormatted, "do 'of' MMMM, h a")
         : undefined;
-      const image = data.elements[i].keyImages[2].url;
-      const title = data.elements[i].title;
-      const description = endDate ? `Free now until ${endDate}` : "Coming soon";
+      const image = filteredData[i].keyImages[2].url;
+      const title = filteredData[i].title;
+
+      const upcomingDate =
+        filteredData[i].promotions?.upcomingPromotionalOffers[0]
+          ?.promotionalOffers[0].startDate;
+
+      const upcomingDateFormatted = upcomingDate
+        ? `from ${format(new Date(upcomingDate), "do 'of' MMMM, h a")} GMT`
+        : "";
+
+      const description = endDate
+        ? `Free now until ${endDate} GMT`
+        : `Coming soon ${upcomingDateFormatted}`;
+
       const download_url = endDate
-        ? `https://store.epicgames.com/en-US/p/${data.elements[i].productSlug}`
+        ? `https://store.epicgames.com/en-US/p/${filteredData[i].productSlug}`
         : undefined;
 
       variables.push({
