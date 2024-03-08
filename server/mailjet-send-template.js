@@ -52,7 +52,9 @@ response
       const endDate = endDateFormatted
         ? format(endDateFormatted, "do 'of' MMMM, h a")
         : undefined;
-      const image = filteredData[i].keyImages[2].url;
+      const image =
+        filteredData[i].keyImages.find((img) => img.type === "OfferImageTall")
+          .url || filteredData[i].keyImages[2].url;
       const title = filteredData[i].title;
 
       const upcomingDate =
