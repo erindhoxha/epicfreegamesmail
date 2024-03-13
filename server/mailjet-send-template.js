@@ -1,10 +1,11 @@
 const Mailjet = require("node-mailjet");
-require("dotenv").config();
+require("dotenv").config({ path: "../.env" });
 const axios = require("axios");
 const { format } = require("date-fns");
 
 const TEMPLATE_ID_2_COLUMNS = 5723859;
 const TEMPLATE_ID_3_COLUMNS = 5743120;
+const TEMPLATE_AUTOMATED = 5785337;
 
 const mailjet = Mailjet.apiConnect(
   process.env.MJ_APIKEY_PUBLIC,
@@ -34,27 +35,36 @@ response
       return game.promotions;
     });
 
-    if (filteredData.length === 2) {
-      template = TEMPLATE_ID_2_COLUMNS;
-    } else if (filteredData.length === 3) {
-      template = TEMPLATE_ID_3_COLUMNS;
-    } else {
-      console.log("Error, no template found");
-    }
+    template = TEMPLATE_AUTOMATED;
+
+    // if (filteredData.length === 2) {
+    //   template = TEMPLATE_ID_2_COLUMNS;
+    // } else if (filteredData.length === 3) {
+    //   template = TEMPLATE_ID_3_COLUMNS;
+    // } else {
+    //   console.log("Error, no template found");
+    // }
 
     const variables = [];
 
     for (let i = 0; i < filteredData.length; i++) {
-      const endDates =
+      const unfilteredDate =
         filteredData[i].promotions?.promotionalOffers[0]?.promotionalOffers[0]
           .endDate;
-      const endDateFormatted = endDates ? new Date(endDates) : undefined;
-      const endDate = endDateFormatted
-        ? format(endDateFormatted, "do 'of' MMMM, h a")
+      const formattedDate = unfilteredDate
+        ? new Date(unfilteredDate)
         : undefined;
+      const endDate = formattedDate
+        ? format(formattedDate, "do 'of' MMMM, h a")
+        : undefined;
+
       const image =
         filteredData[i].keyImages.find((img) => img.type === "OfferImageTall")
-          .url || filteredData[i].keyImages[2].url;
+          .url ||
+        filteredData[i].keyImages[2]?.url ||
+        filteredData[i]?.keyImages[0]?.url ||
+        filteredData[i]?.keyImages[1]?.url;
+
       const title = filteredData[i].title;
 
       const upcomingDate =
@@ -69,20 +79,18 @@ response
         ? `Free now until ${endDate} GMT`
         : `Coming soon ${upcomingDateFormatted}`;
 
-      console.log(filteredData[i]);
-
       const download_url = endDate
         ? `https://store.epicgames.com/en-US/p/${filteredData[i].catalogNs.mappings[0].pageSlug}`
-        : undefined;
+        : "";
 
       variables.push({
-        [`title_${i + 1}`]: title,
-        [`description_${i + 1}`]: description,
-        [`image_${i + 1}`]: image,
-        [`download_url_${i + 1}`]: download_url,
+        [`title`]: title,
+        [`description`]: description,
+        [`image`]: image,
+        [`download_url`]: download_url,
       });
     }
-    sendRequest(template, Object.assign({}, ...variables));
+    sendRequest(template, Object.assign({}, variables));
   })
   .catch((err) => console.log(err));
 
@@ -101,7 +109,7 @@ const sendRequest = async (templateId, variables) => {
         },
         To: [recipient],
         Variables: {
-          ...variables,
+          items: variables,
         },
         TemplateErrorReporting: {
           Email: "erind.cbh@gmail.com",
@@ -118,6 +126,6 @@ const sendRequest = async (templateId, variables) => {
       console.log(result.body);
     })
     .catch((err) => {
-      console.log(err.statusCode);
+      console.log(err);
     });
 };
