@@ -105,7 +105,7 @@ const sendRequest = async (templateId, variables) => {
       return {
         From: {
           Email: "hello@epicfreegamesmail.com",
-          Name: "Epic Free Games Mail",
+          Name: "EFGM Newsletter",
         },
         To: [recipient],
         Variables: {
@@ -117,7 +117,7 @@ const sendRequest = async (templateId, variables) => {
         },
         TemplateID: templateId,
         TemplateLanguage: true,
-        Subject: `Epic Free Games - ${new Date().toDateString()}`,
+        Subject: `Games this week - ${new Date().toDateString()}`,
       };
     }),
   });
