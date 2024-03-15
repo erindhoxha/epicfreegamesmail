@@ -6,6 +6,7 @@ const { format } = require("date-fns");
 const TEMPLATE_ID_2_COLUMNS = 5723859;
 const TEMPLATE_ID_3_COLUMNS = 5743120;
 const TEMPLATE_AUTOMATED = 5785337;
+const TEMPLATE_ONE_ROW = 5789055;
 
 const mailjet = Mailjet.apiConnect(
   process.env.MJ_APIKEY_PUBLIC,
@@ -35,7 +36,7 @@ response
       return game.promotions;
     });
 
-    template = TEMPLATE_AUTOMATED;
+    template = TEMPLATE_ONE_ROW;
 
     // if (filteredData.length === 2) {
     //   template = TEMPLATE_ID_2_COLUMNS;
@@ -59,13 +60,15 @@ response
         : undefined;
 
       const image =
-        filteredData[i].keyImages.find((img) => img.type === "OfferImageTall")
+        filteredData[i].keyImages.find((img) => img.type === "OfferImageWide")
           .url ||
         filteredData[i].keyImages[2]?.url ||
         filteredData[i]?.keyImages[0]?.url ||
         filteredData[i]?.keyImages[1]?.url;
 
       const title = filteredData[i].title;
+
+      const description = filteredData[i].description;
 
       const upcomingDate =
         filteredData[i].promotions?.upcomingPromotionalOffers[0]
@@ -75,7 +78,11 @@ response
         ? `from ${format(new Date(upcomingDate), "do 'of' MMMM, h a")} GMT`
         : "";
 
-      const description = endDate
+      const price = endDate
+        ? filteredData[i].price?.totalPrice?.fmtPrice.originalPrice || ""
+        : "";
+
+      const description_2 = endDate
         ? `Free now until ${endDate} GMT`
         : `Coming soon ${upcomingDateFormatted}`;
 
@@ -86,19 +93,30 @@ response
       variables.push({
         [`title`]: title,
         [`description`]: description,
+        [`description_2`]: description_2,
         [`image`]: image,
         [`download_url`]: download_url,
+        [`price`]: price,
       });
+      console.log(variables);
     }
     sendRequest(template, Object.assign({}, variables));
   })
   .catch((err) => console.log(err));
 
 const sendRequest = async (templateId, variables) => {
-  const contacts = await mailjet.get("contact?ContactsList=10422731").request();
-  const recipients = contacts.body.Data.map((contact) => ({
-    Email: contact.Email,
-  }));
+  // const contacts = await mailjet
+  //   .get("contact?ContactsList=10422731?limit=1000")
+  //   .request();
+  // const recipients = contacts.body.Data.map((contact) => ({
+  //   Email: contact.Email,
+  // }));
+
+  const recipients = [
+    {
+      Email: "erind.cbh@gmail.com",
+    },
+  ];
 
   const request = mailjet.post("send", { version: "v3.1" }).request({
     Messages: recipients.map((recipient) => {
