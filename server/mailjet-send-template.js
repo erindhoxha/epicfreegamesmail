@@ -105,18 +105,18 @@ response
   .catch((err) => console.log(err));
 
 const sendRequest = async (templateId, variables) => {
-  // const contacts = await mailjet
-  //   .get("contact?ContactsList=10422731?limit=1000")
-  //   .request();
-  // const recipients = contacts.body.Data.map((contact) => ({
-  //   Email: contact.Email,
-  // }));
+  const contacts = await mailjet
+    .get("contact?ContactsList=10422731?limit=50?offset=50")
+    .request();
+  const recipients = contacts.body.Data.map((contact) => ({
+    Email: contact.Email,
+  }));
 
-  const recipients = [
-    {
-      Email: "erind.cbh@gmail.com",
-    },
-  ];
+  // const recipients = [
+  //   {
+  //     Email: "erind.cbh@gmail.com",
+  //   },
+  // ];
 
   const request = mailjet.post("send", { version: "v3.1" }).request({
     Messages: recipients.map((recipient) => {
@@ -135,7 +135,7 @@ const sendRequest = async (templateId, variables) => {
         },
         TemplateID: templateId,
         TemplateLanguage: true,
-        Subject: `Games this week - ${new Date().toDateString()}`,
+        Subject: `Free games this week - ${new Date().toDateString()}`,
       };
     }),
   });
