@@ -105,45 +105,54 @@ response
   .catch((err) => console.log(err));
 
 const sendRequest = async (templateId, variables) => {
-  const contacts = await mailjet
-    .get("contact?ContactsList=10422731?limit=50?offset=50")
-    .request();
-  const recipients = contacts.body.Data.map((contact) => ({
-    Email: contact.Email,
-  }));
+  let offset = 0;
+  const limit = 50;
 
-  // const recipients = [
-  //   {
-  //     Email: "erind.cbh@gmail.com",
-  //   },
-  // ];
+  while (true) {
+    const contacts = await mailjet
+      .get(`contact?ContactsList=10422731?limit=${limit}?offset=${offset}`)
+      .request();
 
-  const request = mailjet.post("send", { version: "v3.1" }).request({
-    Messages: recipients.map((recipient) => {
-      return {
-        From: {
-          Email: "hello@epicfreegamesmail.com",
-          Name: "EFGM Newsletter",
-        },
-        To: [recipient],
-        Variables: {
-          items: variables,
-        },
-        TemplateErrorReporting: {
-          Email: "erind.cbh@gmail.com",
-          Name: "Erind",
-        },
-        TemplateID: templateId,
-        TemplateLanguage: true,
-        Subject: `Free games this week - ${new Date().toDateString()}`,
-      };
-    }),
-  });
-  request
-    .then((result) => {
-      console.log(result.body);
-    })
-    .catch((err) => {
-      console.log(err);
+    if (contacts.body.Data.length === 0) {
+      break;
+    }
+
+    const recipients = contacts.body.Data.map((contact) => ({
+      Email: contact.Email,
+    }));
+
+    const request = mailjet.post("send", { version: "v3.1" }).request({
+      Messages: recipients.map((recipient) => {
+        return {
+          From: {
+            Email: "hello@epicfreegamesmail.com",
+            Name: "EFGM Newsletter",
+          },
+          To: [recipient],
+          Variables: {
+            items: variables,
+          },
+          TemplateErrorReporting: {
+            Email: "erind.cbh@gmail.com",
+            Name: "Erind",
+          },
+          TemplateID: templateId,
+          TemplateLanguage: true,
+          Subject: `Free games this week - ${new Date().toDateString()}`,
+        };
+      }),
     });
+
+    request
+      .then((result) => {
+        console.log(result.body);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    offset += limit;
+
+    await new Promise((resolve) => setTimeout(resolve, 11000));
+  }
 };
