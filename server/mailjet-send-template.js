@@ -100,7 +100,8 @@ response
       });
       console.log(variables);
     }
-    sendRequest(template, Object.assign({}, variables));
+    // sendRequest(template, Object.assign({}, variables));
+    sendTestRequest(template, Object.assign({}, variables));
   })
   .catch((err) => console.log(err));
 
@@ -155,4 +156,42 @@ const sendRequest = async (templateId, variables) => {
 
     await new Promise((resolve) => setTimeout(resolve, 11000));
   }
+};
+
+const sendTestRequest = (templateId, variables) => {
+  const recipients = [
+    {
+      Email: "erind.cbh@gmail.com",
+    },
+  ];
+
+  const request = mailjet.post("send", { version: "v3.1" }).request({
+    Messages: recipients.map((recipient) => {
+      return {
+        From: {
+          Email: "hello@epicfreegamesmail.com",
+          Name: "EFGM Newsletter",
+        },
+        To: [recipient],
+        Variables: {
+          items: variables,
+        },
+        TemplateErrorReporting: {
+          Email: "erind.cbh@gmail.com",
+          Name: "Erind",
+        },
+        TemplateID: templateId,
+        TemplateLanguage: true,
+        Subject: `Free games this week - ${new Date().toDateString()}`,
+      };
+    }),
+  });
+
+  request
+    .then((result) => {
+      console.log(result.body);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
