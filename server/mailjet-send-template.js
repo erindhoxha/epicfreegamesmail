@@ -3,9 +3,6 @@ require("dotenv").config({ path: "../.env" });
 const axios = require("axios");
 const { format } = require("date-fns");
 
-const TEMPLATE_ID_2_COLUMNS = 5723859;
-const TEMPLATE_ID_3_COLUMNS = 5743120;
-const TEMPLATE_AUTOMATED = 5785337;
 const TEMPLATE_ONE_ROW = 5789055;
 
 const mailjet = Mailjet.apiConnect(
@@ -24,27 +21,33 @@ const response = axios.get(
 response
   .then((res) => {
     const data = res.data.data.Catalog.searchStore;
-    let template;
+    let template = TEMPLATE_ONE_ROW;
 
-    const sortedData = data.elements.sort((a, b) => {
-      if (a.promotions?.promotionalOffers.length > 0) {
-        return -1;
-      }
-    });
+    const sortedData = data.elements
+      .map((element, index) => ({ ...element, originalIndex: index })) // add original index to each element
+      .sort((a, b) => {
+        const aDiscount =
+          a.promotions?.promotionalOffers?.[0]?.promotionalOffers?.[0]
+            ?.discountSetting?.discountPercentage;
+        const bDiscount =
+          b.promotions?.promotionalOffers?.[0]?.promotionalOffers?.[0]
+            ?.discountSetting?.discountPercentage;
+
+        if (aDiscount === 0 && bDiscount !== 0) {
+          return -1;
+        }
+        if (bDiscount === undefined) {
+          return -1;
+        }
+        if (aDiscount !== 0 && bDiscount > 0) {
+          return 1;
+        }
+        return a.originalIndex - b.originalIndex;
+      });
 
     const filteredData = sortedData.filter((game) => {
       return game.promotions;
     });
-
-    template = TEMPLATE_ONE_ROW;
-
-    // if (filteredData.length === 2) {
-    //   template = TEMPLATE_ID_2_COLUMNS;
-    // } else if (filteredData.length === 3) {
-    //   template = TEMPLATE_ID_3_COLUMNS;
-    // } else {
-    //   console.log("Error, no template found");
-    // }
 
     const variables = [];
 
@@ -78,17 +81,41 @@ response
         ? `from ${format(new Date(upcomingDate), "do 'of' MMMM, h a")} GMT`
         : "";
 
-      const price = endDate
-        ? filteredData[i].price?.totalPrice?.fmtPrice.originalPrice || ""
-        : "";
+      const isFree =
+        filteredData[i].promotions?.promotionalOffers?.[0]
+          ?.promotionalOffers?.[0]?.discountSetting?.discountPercentage === 0;
 
-      const description_2 = endDate
-        ? `Free now until ${endDate} GMT`
-        : `Coming soon ${upcomingDateFormatted}`;
+      const isDiscount =
+        filteredData[i].promotions?.promotionalOffers?.[0]
+          ?.promotionalOffers?.[0]?.discountSetting?.discountPercentage > 0;
 
-      const download_url = endDate
-        ? `https://store.epicgames.com/en-US/p/${filteredData[i].catalogNs.mappings[0].pageSlug}`
-        : "";
+      const price =
+        isFree || isDiscount
+          ? filteredData[i].price?.totalPrice?.fmtPrice.originalPrice
+          : "";
+
+      let discountedPrice = "";
+      if (isDiscount) {
+        discountedPrice =
+          filteredData[i].price?.totalPrice?.fmtPrice.discountPrice;
+      }
+
+      const getDescription = () => {
+        if (isFree) {
+          return `Free now until ${endDate} GMT`;
+        }
+        if (isDiscount) {
+          return `Discounted now until ${endDate} GMT`;
+        }
+        return `Coming soon ${upcomingDateFormatted}`;
+      };
+
+      const description_2 = getDescription();
+
+      const download_url =
+        isFree || isDiscount
+          ? `https://store.epicgames.com/en-US/p/${filteredData[i].catalogNs.mappings[0].pageSlug}`
+          : "";
 
       variables.push({
         [`title`]: title,
@@ -97,9 +124,12 @@ response
         [`image`]: image,
         [`download_url`]: download_url,
         [`price`]: price,
+        [`discountedPrice`]: discountedPrice || "",
       });
-      console.log(variables);
     }
+
+    console.log(variables);
+
     // sendRequest(template, Object.assign({}, variables));
     sendTestRequest(template, Object.assign({}, variables));
   })
