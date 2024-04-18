@@ -119,7 +119,7 @@ response
 
       variables.push({
         [`title`]: title,
-        [`description`]: description,
+        [`description`]: description === title ? "" : description,
         [`description_2`]: description_2,
         [`image`]: image,
         [`download_url`]: download_url,
