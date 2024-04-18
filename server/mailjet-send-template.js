@@ -123,7 +123,7 @@ response
         [`description_2`]: description_2,
         [`image`]: image,
         [`download_url`]: download_url,
-        [`price`]: price,
+        [`price`]: price === "0" ? "" : price,
         [`discountedPrice`]: discountedPrice || "",
       });
     }
