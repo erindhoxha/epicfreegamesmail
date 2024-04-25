@@ -112,9 +112,18 @@ response
 
       const description_2 = getDescription();
 
+      console.log(filteredData[i]);
+
+      const slugInner =
+        filteredData[i].offerType === "BASE_GAME" ? "p" : "bundles";
+
+      const pageSlug =
+        filteredData[i].catalogNs.mappings?.[0].pageSlug ||
+        filteredData[i].urlSlug;
+
       const download_url =
         isFree || isDiscount
-          ? `https://store.epicgames.com/en-US/p/${filteredData[i].catalogNs.mappings[0].pageSlug}`
+          ? `https://store.epicgames.com/en-US/${slugInner}/${pageSlug}`
           : "";
 
       variables.push({
