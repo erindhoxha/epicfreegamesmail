@@ -64,14 +64,22 @@ response
 
       const image =
         filteredData[i].keyImages.find((img) => img.type === "OfferImageWide")
-          .url ||
+          ?.url ||
         filteredData[i].keyImages[2]?.url ||
         filteredData[i]?.keyImages[0]?.url ||
         filteredData[i]?.keyImages[1]?.url;
 
-      const title = filteredData[i].title;
+      let title = filteredData[i].title;
 
-      const description = filteredData[i].description;
+      if (title.includes("Mystery Game")) {
+        title = "Mystery Game";
+      }
+
+      let description = filteredData[i].description;
+
+      if (title.includes("Mystery Game")) {
+        description = "";
+      }
 
       const upcomingDate =
         filteredData[i].promotions?.upcomingPromotionalOffers[0]
@@ -107,6 +115,12 @@ response
         if (isDiscount) {
           return `Discounted now until ${endDate} GMT`;
         }
+        if (title.includes("Mystery Game")) {
+          return `Unlocking from ${format(
+            new Date(upcomingDate),
+            "do 'of' MMMM, h a",
+          )} GMT`;
+        }
         return `Coming soon ${upcomingDateFormatted}`;
       };
 
@@ -115,10 +129,10 @@ response
       console.log(filteredData[i]);
 
       const slugInner =
-        filteredData[i].offerType === "BASE_GAME" ? "p" : "bundles";
+        filteredData[i].offerType === "BASE_GAME" || "ADD_ON" ? "p" : "bundles";
 
       const pageSlug =
-        filteredData[i].catalogNs.mappings?.[0].pageSlug ||
+        filteredData[i].catalogNs.mappings?.[0]?.pageSlug ||
         filteredData[i].urlSlug;
 
       const download_url =
@@ -134,13 +148,15 @@ response
         [`download_url`]: download_url,
         [`price`]: price === "0" ? "" : price,
         [`discountedPrice`]: discountedPrice || "",
+        [`isFree`]: isFree ? "true" : "false",
+        [`isDiscount`]: isDiscount ? "true" : "false",
       });
     }
 
     console.log(variables);
 
-    // sendRequest(template, Object.assign({}, variables));
-    sendTestRequest(template, Object.assign({}, variables));
+    sendRequest(template, Object.assign({}, variables));
+    // sendTestRequest(template, Object.assign({}, variables));
   })
   .catch((err) => console.log(err));
 
@@ -178,7 +194,7 @@ const sendRequest = async (templateId, variables) => {
           },
           TemplateID: templateId,
           TemplateLanguage: true,
-          Subject: `Free games this week - ${new Date().toDateString()}`,
+          Subject: `Claim games this week - ${new Date().toDateString()}`,
         };
       }),
     });
