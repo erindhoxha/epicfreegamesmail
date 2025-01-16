@@ -1,15 +1,15 @@
-const Mailjet = require('node-mailjet');
-require('dotenv').config({ path: '../.env' });
-const axios = require('axios');
-const { format } = require('date-fns');
+const Mailjet = require("node-mailjet");
+require("dotenv").config({ path: "../.env" });
+const axios = require("axios");
+const { format } = require("date-fns");
 
 const TEMPLATE_ONE_ROW = 5789055;
 
 const mailjet = Mailjet.apiConnect(process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
 
-const response = axios.get('https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions', {
-  params: { locale: 'en-gb', includeAll: 'true' },
-  headers: { 'Access-Control-Allow-Origin': '*' },
+const response = axios.get("https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions", {
+  params: { locale: "en-gb", includeAll: "true" },
+  headers: { "Access-Control-Allow-Origin": "*" },
 });
 
 response
@@ -52,28 +52,28 @@ response
       const endDate = formattedDate ? format(formattedDate, "do 'of' MMMM, h a") : undefined;
 
       const image =
-        filteredData[i].keyImages.find((img) => img.type === 'OfferImageWide')?.url ||
+        filteredData[i].keyImages.find((img) => img.type === "OfferImageWide")?.url ||
         filteredData[i].keyImages[2]?.url ||
         filteredData[i]?.keyImages[0]?.url ||
         filteredData[i]?.keyImages[1]?.url;
 
       let title = filteredData[i].title;
 
-      if (title.includes('Mystery Game')) {
-        title = 'Mystery Game';
+      if (title.includes("Mystery Game")) {
+        title = "Mystery Game";
       }
 
       let description = filteredData[i].description;
 
-      if (title.includes('Mystery Game')) {
-        description = '';
+      if (title.includes("Mystery Game")) {
+        description = "";
       }
 
       const upcomingDate = filteredData[i].promotions?.upcomingPromotionalOffers[0]?.promotionalOffers[0].startDate;
 
       const upcomingDateFormatted = upcomingDate
         ? `from ${format(new Date(upcomingDate), "do 'of' MMMM, h a")} GMT`
-        : '';
+        : "";
 
       const isFree =
         filteredData[i].promotions?.promotionalOffers?.[0]?.promotionalOffers?.[0]?.discountSetting
@@ -83,12 +83,14 @@ response
         filteredData[i].promotions?.promotionalOffers?.[0]?.promotionalOffers?.[0]?.discountSetting
           ?.discountPercentage > 0;
 
-      const price = isFree || isDiscount ? filteredData[i].price?.totalPrice?.fmtPrice.originalPrice : '';
+      const price = isFree || isDiscount ? filteredData[i].price?.totalPrice?.fmtPrice.originalPrice : "";
 
-      let discountedPrice = '';
+      let discountedPrice = "";
       if (isDiscount) {
-        discountedPrice = filteredData[i].price?.totalPrice?.fmtPrice.discountPrice;
+        discountedPrice = filteredData[i].price?.totalPrice?.fmtPrice.discountPrice || "";
       }
+
+      console.log(filteredData[i].price?.totalPrice?.fmtPrice.discountPrice || "");
 
       const getDescription = () => {
         if (isFree) {
@@ -97,7 +99,7 @@ response
         if (isDiscount) {
           return `Discounted now until ${endDate} GMT`;
         }
-        if (title.includes('Mystery Game')) {
+        if (title.includes("Mystery Game")) {
           return `Unlocking from ${format(new Date(upcomingDate), "do 'of' MMMM, h a")} GMT`;
         }
         return `Coming soon ${upcomingDateFormatted}`;
@@ -107,16 +109,16 @@ response
 
       // console.log(filteredData[i]);
 
-      let slugInner = filteredData[i].offerType === 'BASE_GAME' || 'ADD_ON' ? 'p' : 'bundles';
+      let slugInner = filteredData[i].offerType === "BASE_GAME" || "ADD_ON" ? "p" : "bundles";
 
-      if (filteredData[i].offerType === 'BUNDLE') {
-        slugInner = 'bundles';
+      if (filteredData[i].offerType === "BUNDLE") {
+        slugInner = "bundles";
       }
 
       const pageSlug =
         filteredData[i].productSlug || filteredData[i].catalogNs.mappings?.[0]?.pageSlug || filteredData[i].urlSlug;
 
-      const download_url = isFree || isDiscount ? `https://store.epicgames.com/en-US/${slugInner}/${pageSlug}` : '';
+      const download_url = isFree || isDiscount ? `https://store.epicgames.com/en-US/${slugInner}/${pageSlug}` : "";
 
       const upcomingDateObj = new Date(upcomingDate);
       const nextWeek = new Date();
@@ -124,19 +126,21 @@ response
 
       variables.push({
         [`title`]: title,
-        [`description`]: description === title ? '' : description,
+        [`description`]: description === title ? "" : description,
         [`description_2`]: description_2,
         [`image`]: image,
         [`download_url`]: download_url,
-        [`price`]: price === '0' ? '' : price,
-        [`discountedPrice`]: discountedPrice || '',
-        [`isFree`]: isFree ? 'true' : 'false',
-        [`isDiscount`]: isDiscount ? 'true' : 'false',
+        [`price`]: price === "0" ? "" : price,
+        [`discountedPrice`]: discountedPrice !== 0 ? discountedPrice : "",
+        [`isFree`]: isFree ? "true" : "false",
+        [`isDiscount`]: isDiscount ? "true" : "false",
       });
     }
 
-    sendRequest(template, Object.assign({}, variables));
-    // sendTestRequest(template, Object.assign({}, variables));
+    console.log(variables);
+
+    // sendRequest(template, Object.assign({}, variables));
+    sendTestRequest(template, Object.assign({}, variables));
   })
   .catch((err) => console.log(err));
 
@@ -155,20 +159,20 @@ const sendRequest = async (templateId, variables) => {
       Email: contact.Email,
     }));
 
-    const request = mailjet.post('send', { version: 'v3.1' }).request({
+    const request = mailjet.post("send", { version: "v3.1" }).request({
       Messages: recipients.map((recipient) => {
         return {
           From: {
-            Email: 'hello@epicfreegamesmail.com',
-            Name: 'EFGM Newsletter',
+            Email: "hello@epicfreegamesmail.com",
+            Name: "EFGM Newsletter",
           },
           To: [recipient],
           Variables: {
             items: variables,
           },
           TemplateErrorReporting: {
-            Email: 'erind.cbh@gmail.com',
-            Name: 'Erind',
+            Email: "erind.cbh@gmail.com",
+            Name: "Erind",
           },
           TemplateID: templateId,
           TemplateLanguage: true,
@@ -194,24 +198,24 @@ const sendRequest = async (templateId, variables) => {
 const sendTestRequest = (templateId, variables) => {
   const recipients = [
     {
-      Email: 'erind.cbh@gmail.com',
+      Email: "hello@erindhoxha.dev",
     },
   ];
 
-  const request = mailjet.post('send', { version: 'v3.1' }).request({
+  const request = mailjet.post("send", { version: "v3.1" }).request({
     Messages: recipients.map((recipient) => {
       return {
         From: {
-          Email: 'hello@epicfreegamesmail.com',
-          Name: 'EFGM Newsletter',
+          Email: "hello@epicfreegamesmail.com",
+          Name: "EFGM Newsletter",
         },
         To: [recipient],
         Variables: {
           items: variables,
         },
         TemplateErrorReporting: {
-          Email: 'erind.cbh@gmail.com',
-          Name: 'Erind',
+          Email: "erind.cbh@gmail.com",
+          Name: "Erind",
         },
         TemplateID: templateId,
         TemplateLanguage: true,
