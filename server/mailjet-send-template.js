@@ -139,8 +139,8 @@ response
 
     console.log(variables);
 
-    // sendRequest(template, Object.assign({}, variables));
-    sendTestRequest(template, Object.assign({}, variables));
+    sendRequest(template, Object.assign({}, variables));
+    // sendTestRequest(template, Object.assign({}, variables));
   })
   .catch((err) => console.log(err));
 

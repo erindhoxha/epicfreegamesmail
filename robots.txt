@@ -3,3 +3,5 @@ Disallow:
 User-agent: *
 Disallow: 
 Disallow: /cgi-bin/
+Allow: /
+Sitemap: https://epicfreegamesmail.com/sitemap.xml
