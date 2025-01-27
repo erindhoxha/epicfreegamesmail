@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Epic Free Games Mail</title>
+    <title>Weekly Free Games Email | Epic Games Notifications</title>
     <meta
       name="description"
-      content="Get weekly email updates on the latest free games from the Epic Games Store. Never miss a free game—sign up today and enjoy exclusive notifications straight to your inbox!" />
+      content="Get weekly email updates on free Epic Games Store titles. Never miss a free game—sign up today for exclusive notifications to your inbox!" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -15,7 +15,7 @@
     <meta property="og:image" content="https://epicfreegamesmail.com/img/og-image.jpg" />
     <meta
       property="og:description"
-      content="Get weekly email updates on the latest free games from the Epic Games Store. Never miss a free game—sign up today and enjoy exclusive notifications straight to your inbox!" />
+      content="Get weekly email updates on free Epic Games Store titles. Never miss a free game—sign up today for exclusive notifications to your inbox!" />
     <meta property="og:url" content="https://epicfreegamesmail.com" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="EpicFreeGamesMail" />
@@ -35,8 +35,7 @@
     <meta name="twitter:title" content="Epic Free Games Mail" />
     <meta
       name="twitter:description"
-      content="Get weekly email updates on the latest free games from the Epic Games Store. Never miss a free game—sign up today and enjoy exclusive notifications straight to your inbox!" />
-
+      content="Get weekly email updates on free Epic Games Store titles. Never miss a free game—sign up today for exclusive notifications to your inbox!" />
     <meta name="twitter:image" content="https://epicfreegamesmail.com/img/og-image.jpg" />
   </head>
   <body class="bg-gray-900 text-slate-200 overflow-x-hidden">
@@ -105,5 +104,40 @@
       </section>
     </main>
     <script src="./scripts/methods.js"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Epic Free Games Mail",
+        "url": "https://epicfreegamesmail.com",
+        "description": "Get weekly email updates on the latest free games from the Epic Games Store. Never miss a free game—sign up today for exclusive notifications straight to your inbox!",
+        "potentialAction": {
+          "@type": "SubscribeAction",
+          "name": "Subscribe to Weekly Free Games Email",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://epicfreegamesmail.com",
+            "actionPlatform": ["http://schema.org/DesktopWebPlatform", "http://schema.org/MobileWebPlatform"]
+          }
+        }
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Epic Free Games Mail",
+        "url": "https://epicfreegamesmail.com",
+        "logo": "https://epicfreegamesmail.com/favicon-32x32.png",
+        "sameAs": ["https://twitter.com/your-twitter-handle", "https://facebook.com/your-facebook-handle"],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "hello@epicfreegamesmail.com",
+          "contactType": "customer support",
+          "availableLanguage": ["English"]
+        }
+      }
+    </script>
   </body>
 </html>
