@@ -1,6 +1,7 @@
 User-agent: Googlebot
-Allow: /pas-nc-embedded-v1.js
+Allow: /
 
 User-agent: *
 Disallow: /cgi-bin/
+
 Sitemap: https://epicfreegamesmail.com/sitemap.xml
