@@ -96,7 +96,7 @@ response
         if (isFree) {
           return `Free now until ${endDate} GMT`;
         }
-        if (isDiscount) {
+        if (isDiscount && discountedPrice !== "0") {
           return `Discounted now until ${endDate} GMT`;
         }
         if (title.includes("Mystery Game")) {
@@ -131,9 +131,9 @@ response
         [`image`]: image,
         [`download_url`]: download_url,
         [`price`]: price === "0" ? "" : price,
-        [`discountedPrice`]: discountedPrice !== 0 ? discountedPrice : "",
+        [`discountedPrice`]: discountedPrice !== "0" ? discountedPrice : "",
         [`isFree`]: isFree ? "true" : "false",
-        [`isDiscount`]: isDiscount ? "true" : "false",
+        [`isDiscount`]: isDiscount && discountedPrice !== "0" ? "true" : "false",
       });
     }
 
