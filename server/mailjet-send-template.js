@@ -52,6 +52,8 @@ response
       const endDate = formattedDate ? format(formattedDate, "do 'of' MMMM, h a") : undefined;
 
       const image =
+        filteredData[i].keyImages.find((img) => img.type === "DieselGameBoxWide")?.url ||
+        filteredData[i].keyImages.find((img) => img.type === "DieselStoreFrontWide")?.url ||
         filteredData[i].keyImages.find((img) => img.type === "OfferImageWide")?.url ||
         filteredData[i].keyImages[2]?.url ||
         filteredData[i]?.keyImages[0]?.url ||
@@ -116,7 +118,7 @@ response
       }
 
       const pageSlug =
-        filteredData[i].productSlug || filteredData[i].catalogNs.mappings?.[0]?.pageSlug || filteredData[i].urlSlug;
+        filteredData[i].pageSlug || filteredData[i].catalogNs.mappings?.[0]?.pageSlug || filteredData[i].productSlug;
 
       const download_url = isFree || isDiscount ? `https://store.epicgames.com/en-US/${slugInner}/${pageSlug}` : "";
 
@@ -124,17 +126,21 @@ response
       const nextWeek = new Date();
       nextWeek.setDate(nextWeek.getDate() + 7); // set nextWeek to this time next week
 
-      variables.push({
-        [`title`]: title,
-        [`description`]: description === title ? "" : description,
-        [`description_2`]: description_2,
-        [`image`]: image,
-        [`download_url`]: download_url,
-        [`price`]: price === "0" ? "" : price,
-        [`discountedPrice`]: discountedPrice !== "0" ? discountedPrice : "",
-        [`isFree`]: isFree ? "true" : "false",
-        [`isDiscount`]: isDiscount && discountedPrice !== "0" ? "true" : "false",
-      });
+      if (title === "LISA: The Definitive Edition") {
+        // do nothing
+      } else {
+        variables.push({
+          [`title`]: title,
+          [`description`]: description === title ? "" : description,
+          [`description_2`]: description_2,
+          [`image`]: image,
+          [`download_url`]: download_url,
+          [`price`]: price === "0" ? "" : price,
+          [`discountedPrice`]: discountedPrice !== "0" ? discountedPrice : "",
+          [`isFree`]: isFree ? "true" : "false",
+          [`isDiscount`]: isDiscount && discountedPrice !== "0" ? "true" : "false",
+        });
+      }
     }
 
     console.log(variables);
