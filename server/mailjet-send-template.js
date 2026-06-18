@@ -13,7 +13,7 @@ const response = axios.get("https://store-site-backend-static.ak.epicgames.com/f
 });
 
 response
-  .then((res) => {
+  .then(async (res) => {
     const data = res.data.data.Catalog.searchStore;
     let template = TEMPLATE_ONE_ROW;
 
@@ -151,7 +151,7 @@ response
 
     console.log(variables);
 
-    sendRequest(template, Object.assign({}, variables));
+    await sendRequest(template, Object.assign({}, variables));
     // sendTestRequest(template, Object.assign({}, variables));
   })
   .catch((err) => console.log(err));
@@ -161,7 +161,7 @@ const sendRequest = async (templateId, variables) => {
   const limit = 50;
 
   while (true) {
-    const contacts = await mailjet.get(`contact?ContactsList=10422731?limit=${limit}?offset=${offset}`).request();
+    const contacts = await mailjet.get(`contact?ContactsList=10422731&limit=${limit}&offset=${offset}`).request();
 
     if (contacts.body.Data.length === 0) {
       break;
@@ -171,35 +171,34 @@ const sendRequest = async (templateId, variables) => {
       Email: contact.Email,
     }));
 
-    const request = mailjet.post("send", { version: "v3.1" }).request({
-      Messages: recipients.map((recipient) => {
-        return {
-          From: {
-            Email: "hello@epicfreegamesmail.com",
-            Name: "EFGM Newsletter",
-          },
-          To: [recipient],
-          Variables: {
-            items: variables,
-          },
-          TemplateErrorReporting: {
-            Email: "erind.cbh@gmail.com",
-            Name: "Erind",
-          },
-          TemplateID: templateId,
-          TemplateLanguage: true,
-          Subject: `Claim this week's games - ${new Date().toDateString()}`,
-        };
-      }),
-    });
-
-    request
-      .then((result) => {
-        console.log(result.body);
-      })
-      .catch((err) => {
-        console.log(err);
+    try {
+      const result = await mailjet.post("send", { version: "v3.1" }).request({
+        Messages: recipients.map((recipient) => {
+          return {
+            From: {
+              Email: "hello@epicfreegamesmail.com",
+              Name: "EFGM Newsletter",
+            },
+            To: [recipient],
+            Variables: {
+              items: variables,
+            },
+            TemplateErrorReporting: {
+              Email: "erind.cbh@gmail.com",
+              Name: "Erind",
+            },
+            TemplateID: templateId,
+            TemplateLanguage: true,
+            Subject: `Claim this week's games - ${new Date().toDateString()}`,
+          };
+        }),
       });
+
+      console.log(result.body);
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
 
     offset += limit;
 
