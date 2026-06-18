@@ -126,7 +126,13 @@ response
       const nextWeek = new Date();
       nextWeek.setDate(nextWeek.getDate() + 7); // set nextWeek to this time next week
 
-      if (title === "LISA: The Definitive Edition") {
+      if (
+        title === "LISA: The Definitive Edition" ||
+        title === "Ghostrunner 2" ||
+        title === "Monument Valley" ||
+        title === "Castlevania Anniversary Collection" ||
+        title === "Eternal Threads"
+      ) {
         // do nothing
       } else {
         variables.push({
@@ -145,8 +151,8 @@ response
 
     console.log(variables);
 
-    sendRequest(template, Object.assign({}, variables));
-    // sendTestRequest(template, Object.assign({}, variables));
+    // sendRequest(template, Object.assign({}, variables));
+    sendTestRequest(template, Object.assign({}, variables));
   })
   .catch((err) => console.log(err));
 
