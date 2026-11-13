@@ -1,9 +1,8 @@
-name: Send Mailjet Template Once
+name: Send Mailjet Emails
 
+# Sends this week's email to the whole EpicFreeGamesMail list.
+# Manual only: review the Thursday test copy first, then click "Run workflow".
 on:
-  schedule:
-    # 10 hours after setup time (UTC): 2026-06-18 18:57 UTC
-    - cron: "57 18 18 6 *"
   workflow_dispatch:
 
 permissions:
@@ -27,15 +26,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Skip if not 2026
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [[ "$(date -u +%Y)" != "2026" ]]; then
-            echo "Not 2026, skipping one-time run."
-            exit 0
-          fi
-
-      - name: Run mail script
+      - name: Send to all subscribers
         working-directory: server
         run: node mailjet-send-template.js

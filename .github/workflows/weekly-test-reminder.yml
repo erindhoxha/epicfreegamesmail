@@ -2,7 +2,7 @@ name: Weekly test email and reminder
 
 # Epic's free games switch over on Thursdays at 11:00 US Eastern (16:00 UTC in winter,
 # 15:00 UTC in summer). This runs after that: it sends the test copy of this week's
-# email, then a reminder to review it and run "Send Mailjet Template Once" by hand.
+# email, then a reminder to review it and run "Send Mailjet Emails" by hand.
 # Nothing is sent to subscribers from here.
 on:
   schedule:

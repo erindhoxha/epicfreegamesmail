@@ -5,7 +5,7 @@ require("dotenv").config({ path: "../.env" });
 
 const REMINDER_TO = "hello@erindhoxha.dev";
 const SEND_WORKFLOW_URL =
-  "https://github.com/erindhoxha/epicfreegamesmail/actions/workflows/mailjet-send-once.yml";
+  "https://github.com/erindhoxha/epicfreegamesmail/actions/workflows/mailjet-send.yml";
 
 const mailjet = Mailjet.apiConnect(process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
 
@@ -29,7 +29,7 @@ mailjet
         HTMLPart: `<p>This week's test copy has been sent to your inbox. Nothing has gone to subscribers yet.</p>
 <ol>
   <li>Check the test email (games, dates, links, images).</li>
-  <li>Open the <a href="${SEND_WORKFLOW_URL}">Send Mailjet Template Once</a> workflow.</li>
+  <li>Open the <a href="${SEND_WORKFLOW_URL}">Send Mailjet Emails</a> workflow.</li>
   <li>Click <b>Run workflow</b> on <code>master</code> to send it to the EpicFreeGamesMail list.</li>
 </ol>`,
       },
