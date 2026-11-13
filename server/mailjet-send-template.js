@@ -7,6 +7,14 @@ const TEMPLATE_ONE_ROW = 5789055;
 
 const mailjet = Mailjet.apiConnect(process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
 
+const getActiveOffer = (game) => {
+  const now = new Date();
+  const offers = (game.promotions?.promotionalOffers || [])
+    .flatMap((o) => o.promotionalOffers || [])
+    .filter((o) => new Date(o.startDate) <= now && now < new Date(o.endDate));
+  return offers.find((o) => o.discountSetting?.discountPercentage === 0) || offers[0];
+};
+
 const response = axios.get("https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions", {
   params: { locale: "en-gb", includeAll: "true" },
   headers: { "Access-Control-Allow-Origin": "*" },
@@ -24,9 +32,9 @@ response
       })) // add original index to each element
       .sort((a, b) => {
         const aDiscount =
-          a.promotions?.promotionalOffers?.[0]?.promotionalOffers?.[0]?.discountSetting?.discountPercentage;
+          getActiveOffer(a)?.discountSetting?.discountPercentage;
         const bDiscount =
-          b.promotions?.promotionalOffers?.[0]?.promotionalOffers?.[0]?.discountSetting?.discountPercentage;
+          getActiveOffer(b)?.discountSetting?.discountPercentage;
 
         if (aDiscount === 0 && bDiscount !== 0) {
           return -1;
@@ -47,7 +55,8 @@ response
     const variables = [];
 
     for (let i = 0; i < filteredData.length; i++) {
-      const unfilteredDate = filteredData[i].promotions?.promotionalOffers[0]?.promotionalOffers[0].endDate;
+      const activeOffer = getActiveOffer(filteredData[i]);
+      const unfilteredDate = activeOffer?.endDate;
       const formattedDate = unfilteredDate ? new Date(unfilteredDate) : undefined;
       const endDate = formattedDate ? format(formattedDate, "do 'of' MMMM, h a") : undefined;
 
@@ -77,13 +86,9 @@ response
         ? `from ${format(new Date(upcomingDate), "do 'of' MMMM, h a")} GMT`
         : "";
 
-      const isFree =
-        filteredData[i].promotions?.promotionalOffers?.[0]?.promotionalOffers?.[0]?.discountSetting
-          ?.discountPercentage === 0;
+      const isFree = activeOffer?.discountSetting?.discountPercentage === 0;
 
-      const isDiscount =
-        filteredData[i].promotions?.promotionalOffers?.[0]?.promotionalOffers?.[0]?.discountSetting
-          ?.discountPercentage > 0;
+      const isDiscount = activeOffer?.discountSetting?.discountPercentage > 0;
 
       const price = isFree || isDiscount ? filteredData[i].price?.totalPrice?.fmtPrice.originalPrice : "";
 
@@ -131,7 +136,8 @@ response
         title === "Ghostrunner 2" ||
         title === "Monument Valley" ||
         title === "Castlevania Anniversary Collection" ||
-        title === "Eternal Threads"
+        title === "Eternal Threads" ||
+        title === "Lost Castle: The Old Ones Awaken"
       ) {
         // do nothing
       } else {
