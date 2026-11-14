@@ -1,0 +1,40 @@
+name: Send Mailjet Emails (V2)
+
+# Sends this week's email to the whole EpicFreeGamesMail list using the new
+# code-built design (email-v2/). Manual only. Run EITHER this OR "Send Mailjet Emails"
+# in a given week, never both, or subscribers get two emails.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "send" to email every subscriber with the V2 design'
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mailjet-send-v2
+  cancel-in-progress: false
+
+jobs:
+  send-mail-v2:
+    if: ${{ inputs.confirm == 'send' }}
+    runs-on: ubuntu-latest
+    env:
+      MJ_APIKEY_PUBLIC: ${{ secrets.MJ_APIKEY_PUBLIC }}
+      MJ_APIKEY_PRIVATE: ${{ secrets.MJ_APIKEY_PRIVATE }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Send V2 email to all subscribers
+        run: node email-v2/send.js --confirm

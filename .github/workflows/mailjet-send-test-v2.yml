@@ -1,0 +1,36 @@
+name: Send Mailjet Test (V2)
+
+# Sends the new code-built email (email-v2/) to the test inbox only.
+# Leave "recipient" empty to use the default test address.
+on:
+  workflow_dispatch:
+    inputs:
+      recipient:
+        description: "Send the test to (optional)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  send-mail-test-v2:
+    runs-on: ubuntu-latest
+    env:
+      MJ_APIKEY_PUBLIC: ${{ secrets.MJ_APIKEY_PUBLIC }}
+      MJ_APIKEY_PRIVATE: ${{ secrets.MJ_APIKEY_PRIVATE }}
+      RECIPIENT: ${{ inputs.recipient }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Send V2 test email
+        run: node email-v2/send-test.js $RECIPIENT

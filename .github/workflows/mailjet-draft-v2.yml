@@ -1,0 +1,39 @@
+name: Create Mailjet Draft (V2)
+
+# Creates this week's Mailjet campaign draft with the new code-built email (email-v2/),
+# emails a test copy and a reminder. Nothing reaches subscribers until the draft is
+# sent by hand in Mailjet > Campaigns.
+# Epic's free games switch over on Thursdays at 11:00 US Eastern (16:00 UTC in winter,
+# 15:00 UTC in summer), so this runs after that.
+on:
+  schedule:
+    - cron: "30 16 * * 4" # Thursdays 16:30 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mailjet-draft-v2
+  cancel-in-progress: false
+
+jobs:
+  draft-v2:
+    runs-on: ubuntu-latest
+    env:
+      MJ_APIKEY_PUBLIC: ${{ secrets.MJ_APIKEY_PUBLIC }}
+      MJ_APIKEY_PRIVATE: ${{ secrets.MJ_APIKEY_PRIVATE }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Create draft, send test copy and reminder
+        run: node email-v2/create-draft.js
