@@ -76,6 +76,31 @@
             width="100%"
             style="height: 0"></iframe>
           <script type="text/javascript" src="https://app.mailjet.com/pas-nc-embedded-v1.js"></script>
+          <!-- Shown only if the Mailjet form doesn't appear (ad blocker, Pi-hole, slow network). -->
+          <div id="form-fallback" hidden style="border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:16px;margin-top:8px">
+            <p style="margin:0 0 8px;font-weight:600;color:#fff">The signup form didn't load.</p>
+            <p style="margin:0">
+              An ad blocker or Pi-hole is probably blocking it (it's loaded from Mailjet). Try turning it off for this
+              site and reloading, or
+              <a href="mailto:hello@erindhoxha.dev?subject=Subscribe%20to%20Epic%20Free%20Games%20Mail" style="color:#8DA2F5;text-decoration:underline">email me</a>
+              and I'll add you.
+            </p>
+          </div>
+          <script>
+            (function () {
+              var frame = document.querySelector('iframe[data-w-type="embedded"]');
+              var fallback = document.getElementById("form-fallback");
+              if (!frame || !fallback) return;
+              var started = Date.now();
+              // Mailjet's script sizes the iframe once the form loads. Check for a while,
+              // and hide the message again if the form shows up late.
+              var timer = setInterval(function () {
+                var loaded = frame.getBoundingClientRect().height > 20;
+                fallback.hidden = loaded || Date.now() - started < 5000;
+                if (loaded || Date.now() - started > 30000) clearInterval(timer);
+              }, 500);
+            })();
+          </script>
         </div>
         <div>
           <h2 class="text-xl font-bold">What is Epic Free Games Mail?</h2>
