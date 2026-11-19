@@ -1,0 +1,33 @@
+name: Daily stats email
+
+# Emails a summary of the last 5 weekly sends (opens, clicks, click/open, bounces)
+# to TEST_EMAIL. Only reads stats; nothing is sent to subscribers from here.
+on:
+  schedule:
+    - cron: "17 8 * * *" # daily 08:17 UTC (odd minute: GitHub delays or drops :00/:30 runs)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  stats:
+    runs-on: ubuntu-latest
+    env:
+      MJ_APIKEY_PUBLIC: ${{ secrets.MJ_APIKEY_PUBLIC }}
+      MJ_APIKEY_PRIVATE: ${{ secrets.MJ_APIKEY_PRIVATE }}
+      TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Email stats
+        run: node email-v2/stats.js --email
