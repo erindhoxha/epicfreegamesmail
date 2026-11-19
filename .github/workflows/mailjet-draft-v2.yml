@@ -7,7 +7,7 @@ name: Create Mailjet Draft (V2)
 # 15:00 UTC in summer), so this runs after that.
 on:
   schedule:
-    - cron: "30 16 * * 4" # Thursdays 16:30 UTC
+    - cron: "17 16 * * 4" # Thursdays 16:17 UTC (odd minute: GitHub delays or drops :00/:30 runs)
   workflow_dispatch:
 
 permissions:
